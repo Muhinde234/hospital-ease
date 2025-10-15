@@ -31,7 +31,7 @@ const LandingPage = () => {
                 </Link>
 
                 <Link to="/login">
-                  <Button className=" text-white hover:bg-white py-2 px-3 hover:text-black hover:rounded-lg  cursor-pointer  pt-1 duration-500">
+                  <Button className=" text-white hover:bg-white py-2 px-3 hover:text-black hover:rounded-lg border border-white rounded-lg  cursor-pointer  pt-1 duration-500">
                     Log In
                   </Button>
                 </Link>
@@ -82,7 +82,7 @@ const LandingPage = () => {
       <section className="py-8">
         <Testimonial />
       </section>
-      <section className="bg-gray-200 py-16 mt-18">
+      <section className="bg-gray-200 py-16 mt-18 mb-32">
         <Container className=" px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
