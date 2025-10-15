@@ -55,11 +55,11 @@ const Register = () => {
       <SEO title="Register page" description="Register page" content="Register page" />
       <Container className="min-h-screen bg-gradient-to-br from-blue-100 to-white p-4 flex flex-col items-center justify-center">
       
-        <Link to="/" className=" flex items-end  mb-4 sm:mb-6">
+        <Link to="/" className="w-full max-w-xl flex justify-start mb-4 sm:mb-6">
           <Button
             type="button"
             onClick={handleGoHome}
-            className="flex items-center space-x-2 text-white  bg-blue-900 p-2 rounded-full transition-colors duration-200"
+            className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

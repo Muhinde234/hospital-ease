@@ -3,75 +3,71 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/common/Button";
 import Input from "../../components/common/Input";
 import SEO from "../../components/common/seo";
-import { z } from "zod"; 
-import { useForm } from "react-hook-form"; 
-import { zodResolver } from "@hookform/resolvers/zod"; 
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react"; 
 
-
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z.string().min(1, "Email is required.").email("Email is invalid."),
-  password: z.string().min(1, "Password is required."),
-  
-  role: z.string().optional(),
 });
 
-;
 
-const Login = () => {
+
+const ForgotPassword = () => {
   const navigate = useNavigate();
+  const [successMessage, setSuccessMessage] = useState(""); 
 
- 
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    
+    reset, 
   } = useForm({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
-      role: "", 
     },
   });
 
   const handleGoHome = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   
-  const onSubmit = (data) => {
-    console.log("Login User Data:", data);
+  const onSubmit = async (data) => {
+    console.log("Forgot Password Request for:", data.email);
+    setSuccessMessage(""); 
 
-
-    const userRole = data.role || "default"; 
-
-    switch (userRole) {
-      case "worker":
-        navigate("/worker-dashboard");
-        break;
+   
+    try {
     
-      case "admin":
-        navigate("/admin-dashboard");
-        break;
-      default:
-     
-        alert("Login successful, but role not specified. Navigating to default dashboard.");
-        navigate("/dashboard"); 
-        break;
+
+      await new Promise((resolve) => setTimeout(resolve, 2000)); 
+
+      setSuccessMessage(
+        "If an account with that email exists, a password reset link has been sent."
+      );
+      reset(); 
+    } catch (error) {
+      console.error("Forgot password error:", error);
+    
+      setSuccessMessage(`Error: ${error.message || 'Something went wrong. Please try again.'}`);
     }
   };
 
   return (
     <>
-      <SEO title="Login page" description="Login page" content="Login page" />
+      <SEO title="Forgot Password" description="Forgot Password Page" content="Forgot Password" />
 
       <Container className="min-h-screen bg-gradient-to-br from-blue-100 to-white p-4 flex flex-col items-center justify-center">
-       <Link to="/" className="w-full max-w-xl flex justify-start mb-4 sm:mb-6">
+    
+        <Link to="/" className="w-full max-w-xl flex justify-start mb-4 sm:mb-6">
           <Button
             type="button"
             onClick={handleGoHome}
-            className="flex items-center space-x-2 text-gray-700 hover:text-gray-900   transition-colors duration-200"
+            className="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -93,17 +89,14 @@ const Login = () => {
 
         <div className="w-full max-w-xl bg-white shadow-lg rounded-2xl p-8 sm:p-10 md:p-12 space-y-6">
           <div className="text-center">
-            <Link to="/" className="text-blue-500 hover:text-blue-600">
-              <span className="ml-3 text-2xl sm:text-3xl font-bold">
-                Welcome Back!
-              </span>
-            </Link>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+              Forgot Password?
+            </h1>
             <p className="mt-2 text-gray-600 text-sm sm:text-base">
-              Please login to your account
+              Enter your email address to reset your password.
             </p>
           </div>
 
-      
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input
               label="Email"
@@ -111,35 +104,16 @@ const Login = () => {
               id="email"
               placeholder="example@email.com"
               required
-             
               {...register("email")}
-            
               error={errors.email?.message}
             />
 
-            <Input
-              label="Password"
-              type="password"
-              id="password"
-              placeholder="Enter your password"
-              required
-              {...register("password")}
-              error={errors.password?.message}
-            />
-
-           
-
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-sm">
-              <Link to="/forgot-password" className="hover:underline text-blue-600">
-                Forgot password?
-              </Link>
-              <span>
-                Need an account?{" "}
-                <Link to="/register" className="underline text-blue-600">
-                  Register
-                </Link>
-              </span>
-            </div>
+            {/* Success/Error message display */}
+            {successMessage && (
+              <p className="text-sm text-center text-green-600 font-medium">
+                {successMessage}
+              </p>
+            )}
 
             <div className="text-center mt-6">
               <Button
@@ -147,14 +121,24 @@ const Login = () => {
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full transition-all duration-300 w-full sm:w-auto"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Logging In..." : "Login"}
+                {isSubmitting ? "Sending..." : "Send Reset Link"}
               </Button>
             </div>
           </form>
+
+          <div className="text-center text-sm text-gray-600">
+            Remember your password?{" "}
+            <Link
+              to="/login"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              Login here
+            </Link>
+          </div>
         </div>
       </Container>
     </>
   );
 };
 
-export default Login;
+export default ForgotPassword;
