@@ -1,16 +1,23 @@
-import { transporter } from "../config/email.js";
+const sgMail = require('../config/sendgrid');
 
-export const sendEmail = async (to, subject, text, html = "") => {
+const sendEmail = async ({ to, subject, html }) => {
+  const msg = {
+    to,
+    from: process.env.SENDGRID_EMAIL_FROM, 
+    subject,
+    html,
+  };
+
   try {
-    await transporter.sendMail({
-      from: `"Health Staff Manager" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      text,
-      html
-    });
-    console.log("✅ Email sent to", to);
+    await sgMail.send(msg);
+    console.log(`Email sent to ${to} with subject: ${subject}`);
+    return true;
   } catch (error) {
-    console.error("❌ Email sending failed:", error);
+    console.error('Error sending email:', error.response ? error.response.body : error);
+    throw new Error('Failed to send email.');
   }
+};
+
+module.exports = {
+  sendEmail,
 };
