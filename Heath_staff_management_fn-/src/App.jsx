@@ -1,15 +1,20 @@
 
 import "./App.css";
+
+import LandingPage from "./pages/landing/landingPage";
 import About from "./pages/landing/About";
-import Contact from "./pages/landing/Contact";
-import LandingPage from "./pages/landing/LandingPage";
+import ApplyPage from "./pages/landing/ApplyPage";
+import ForgotPassword from "./pages/landing/forgot-password";
 import Login from "./pages/landing/Login";
 import Register from "./pages/landing/Register";
-import Services from "./pages/landing/Services";
-import ApplyPage from "./pages/landing/ApplyPage";
+import Contact from "./pages/landing/Contact";
+import Services from "./pages/landing/services"
 import GuestLayout from "./components/layout/GuestLayout";
 import Sidebar from "./components/layout/Sidebar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+
+
 
 const router = createBrowserRouter([
   {
@@ -17,19 +22,24 @@ const router = createBrowserRouter([
     element: <GuestLayout />,
     children: [
       { path: "", element: <LandingPage /> },
-      { path: "about", element: <About /> },
-      { path: "services", element: <Services /> },
-      { path: "contact", element: <Contact /> },
-      { path: "apply-page", element: <ApplyPage /> },
+      { path: "about", element:<About/>  },
+      { path: "services", element: <Services/> },
+      { path: "contact", element: <Contact/> },
+      { path: "apply-page", element:<ApplyPage/>},
+     
     ],
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <Login/>,
   },
   {
     path: "/register",
-    element: <Register />,
+    element: <Register/>,
+  },
+    {
+    path: "/forgot-password",
+    element: <ForgotPassword/>,
   },
   {
     path: "/dashboard",
