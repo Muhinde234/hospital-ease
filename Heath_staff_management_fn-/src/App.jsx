@@ -26,7 +26,7 @@ const router = createBrowserRouter([
       { path: "services", element: <Services/> },
       { path: "contact", element: <Contact/> },
       { path: "apply-page", element:<ApplyPage/>},
-      { path: "forgot-password", element: <ForgotPassword/> },
+     
     ],
   },
   {
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register/>,
+  },
+    {
+    path: "/forgot-password",
+    element: <ForgotPassword/>,
   },
   {
     path: "/dashboard",
