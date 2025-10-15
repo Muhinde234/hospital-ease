@@ -89,7 +89,7 @@ const ForgotPassword = () => {
 
         <div className="w-full max-w-xl bg-white shadow-lg rounded-2xl p-8 sm:p-10 md:p-12 space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            <h1 className="text-2xl sm:text-3xl font-bold text-blue-500 hover:text-blue-600">
               Forgot Password?
             </h1>
             <p className="mt-2 text-gray-600 text-sm sm:text-base">
