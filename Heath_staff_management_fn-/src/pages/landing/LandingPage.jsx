@@ -31,7 +31,7 @@ const LandingPage = () => {
                 </Link>
 
                 <Link to="/login">
-                  <Button className=" text-white hover:bg-white py-2 px-3 hover:text-black hover:rounded-lg  cursor-pointer  pt-1 duration-500">
+                  <Button className=" text-white hover:bg-white py-2 px-3 hover:text-black hover:rounded-lg border border-white rounded-lg  cursor-pointer  pt-1 duration-500">
                     Log In
                   </Button>
                 </Link>
