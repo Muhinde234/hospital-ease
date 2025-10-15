@@ -1,13 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import Container from "../../components/layout/Container";
 import SEO from "../../components/common/seo";
-import { z } from "zod"; // Import Zod
-import { useForm } from "react-hook-form"; // Import useForm from React Hook Form
-import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-// 1. Define your Zod schema (same as before)
 const registerSchema = z
   .object({
     firstname: z.string().min(1, "First name is required."),
@@ -15,32 +14,23 @@ const registerSchema = z
     email: z.string().min(1, "Email is required.").email("Email is invalid."),
     password: z.string().min(6, "Password must be at least 6 characters long."),
     confirmpassword: z.string().min(1, "Confirm password is required."),
-    role: z.string().optional(), // Make role optional for now
+    role: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmpassword, {
     message: "Passwords do not match.",
-    path: ["confirmpassword"], // This attaches the error to the confirmpassword field
+    path: ["confirmpassword"],
   });
-
-// Define the type for your form data from the Zod schema
-// This is very helpful for TypeScript users
-// type RegisterFormInputs = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
 
-  // 2. Initialize useForm with zodResolver
   const {
-    register, // Function to register inputs
-    handleSubmit, // Function to handle form submission
-    formState: { errors, isSubmitting }, // Object containing form state, including errors and submission status
-    // Optionally, you can also include:
-    // watch, // Function to watch input values
-    // setValue, // Function to programmatically set input values
-    // reset // Function to reset the form
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(registerSchema), // Connect Zod schema to RHF
-    defaultValues: { // Set initial values for your form fields
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
       firstname: "",
       lastname: "",
       email: "",
@@ -51,23 +41,45 @@ const Register = () => {
   });
 
   const handleGoHome = () => {
-    navigate("/"); // Navigate to the home page
+    navigate("/");
   };
 
-  // 3. Define your onSubmit function. RHF will pass validated data to it.
   const onSubmit = (data) => {
     console.log("Registered User Data:", data);
-    // Here you would typically send the data to a backend
-    // The `isSubmitting` state can be used to disable the button during this process
-    // For demonstration, we'll just navigate
+  
     navigate("/login");
   };
 
   return (
     <>
       <SEO title="Register page" description="Register page" content="Register page" />
-      <Container className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-100 to-white px-4">
-        <div className="w-full max-w-xl bg-white shadow-sm rounded-2xl p-8 sm:p-10 md:p-12 space-y-6">
+      <Container className="min-h-screen bg-gradient-to-br from-blue-100 to-white p-4 flex flex-col items-center justify-center">
+      
+        <Link to="/" className=" flex items-end  mb-4 sm:mb-6">
+          <Button
+            type="button"
+            onClick={handleGoHome}
+            className="flex items-center space-x-2 text-white  bg-blue-900 p-2 rounded-full transition-colors duration-200"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            <span>Back to Home</span>
+          </Button>
+        </Link>
+
+        <div className="w-full max-w-xl bg-white shadow-lg rounded-2xl p-8 sm:p-10 md:p-12 space-y-6">
           <div className="text-center">
             <Link to="/" className="text-blue-500 hover:text-blue-600">
               <span className="ml-3 text-2xl sm:text-3xl font-bold">
@@ -79,7 +91,6 @@ const Register = () => {
             </p>
           </div>
 
-          {/* 4. Pass RHF's handleSubmit to the form */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
@@ -88,9 +99,7 @@ const Register = () => {
                 id="firstname"
                 placeholder="John"
                 required
-                // 5. Use RHF's register function to connect inputs
                 {...register("firstname")}
-                // 6. Pass errors from RHF's formState to your Input component
                 error={errors.firstname?.message}
               />
               <Input
@@ -144,18 +153,11 @@ const Register = () => {
               </Link>
             </div>
 
-            <div className="flex justify-center gap-4 mt-6">
-              <Button
-                type="button"
-                onClick={handleGoHome}
-                className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-2 rounded-full transition-all duration-300"
-              >
-                Back to Home
-              </Button>
+            <div className="text-center mt-6"> 
               <Button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full transition-all duration-300"
-                disabled={isSubmitting} // Disable button while submitting
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full transition-all duration-300 w-full sm:w-auto"
+                disabled={isSubmitting}
               >
                 {isSubmitting ? "Registering..." : "Register"}
               </Button>
