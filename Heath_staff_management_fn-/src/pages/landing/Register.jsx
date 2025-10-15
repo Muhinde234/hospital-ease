@@ -1,101 +1,66 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
 import Container from "../../components/layout/Container";
 import SEO from "../../components/common/seo";
+import { z } from "zod"; // Import Zod
+import { useForm } from "react-hook-form"; // Import useForm from React Hook Form
+import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
+
+// 1. Define your Zod schema (same as before)
+const registerSchema = z
+  .object({
+    firstname: z.string().min(1, "First name is required."),
+    lastname: z.string().min(1, "Last name is required."),
+    email: z.string().min(1, "Email is required.").email("Email is invalid."),
+    password: z.string().min(6, "Password must be at least 6 characters long."),
+    confirmpassword: z.string().min(1, "Confirm password is required."),
+    role: z.string().optional(), // Make role optional for now
+  })
+  .refine((data) => data.password === data.confirmpassword, {
+    message: "Passwords do not match.",
+    path: ["confirmpassword"], // This attaches the error to the confirmpassword field
+  });
+
+// Define the type for your form data from the Zod schema
+// This is very helpful for TypeScript users
+// type RegisterFormInputs = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const navigate = useNavigate();
 
-  const [formdata, setFormdata] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-    confirmpassword: "",
-    role: "", // Assuming 'role' will be handled later if needed, but keeping it for now
+  // 2. Initialize useForm with zodResolver
+  const {
+    register, // Function to register inputs
+    handleSubmit, // Function to handle form submission
+    formState: { errors, isSubmitting }, // Object containing form state, including errors and submission status
+    // Optionally, you can also include:
+    // watch, // Function to watch input values
+    // setValue, // Function to programmatically set input values
+    // reset // Function to reset the form
+  } = useForm({
+    resolver: zodResolver(registerSchema), // Connect Zod schema to RHF
+    defaultValues: { // Set initial values for your form fields
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmpassword: "",
+      role: "",
+    },
   });
 
-  // New state to hold validation error messages
-  const [validationErrors, setValidationErrors] = useState({});
-
-  const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormdata((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-    // Clear the error for the field being changed
-    setValidationErrors((prev) => ({
-      ...prev,
-      [id]: "",
-    }));
+  const handleGoHome = () => {
+    navigate("/"); // Navigate to the home page
   };
 
-  const validateForm = () => {
-    let errors = {};
-    let isValid = true;
-
-    // First Name validation
-    if (!formdata.firstname.trim()) {
-      errors.firstname = "First name is required.";
-      isValid = false;
-    }
-
-    // Last Name validation
-    if (!formdata.lastname.trim()) {
-      errors.lastname = "Last name is required.";
-      isValid = false;
-    }
-
-    // Email validation
-    if (!formdata.email.trim()) {
-      errors.email = "Email is required.";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formdata.email)) {
-      errors.email = "Email is invalid.";
-      isValid = false;
-    }
-
-    // Password validation
-    if (!formdata.password) {
-      errors.password = "Password is required.";
-      isValid = false;
-    } else if (formdata.password.length < 6) {
-      errors.password = "Password must be at least 6 characters long.";
-      isValid = false;
-    }
-
-    // Confirm Password validation
-    if (!formdata.confirmpassword) {
-      errors.confirmpassword = "Confirm password is required.";
-      isValid = false;
-    } else if (formdata.password !== formdata.confirmpassword) {
-      errors.confirmpassword = "Passwords do not match.";
-      isValid = false;
-    }
-
-    // Role validation (if applicable and you add a selection later)
-    // if (!formdata.role) {
-    //   errors.role = "Please select a role.";
-    //   isValid = false;
-    // }
-
-    setValidationErrors(errors);
-    return isValid;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (validateForm()) {
-      console.log("Registered User:", formdata);
-      // Here you would typically send the data to a backend
-      navigate("/login");
-    } else {
-      console.log("Form has validation errors.");
-    }
+  // 3. Define your onSubmit function. RHF will pass validated data to it.
+  const onSubmit = (data) => {
+    console.log("Registered User Data:", data);
+    // Here you would typically send the data to a backend
+    // The `isSubmitting` state can be used to disable the button during this process
+    // For demonstration, we'll just navigate
+    navigate("/login");
   };
 
   return (
@@ -114,27 +79,28 @@ const Register = () => {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          {/* 4. Pass RHF's handleSubmit to the form */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
                 label="First Name"
                 type="text"
                 id="firstname"
-                value={formdata.firstname}
-                onChange={handleChange}
                 placeholder="John"
                 required
-                error={validationErrors.firstname} // Pass error message to Input component
+                // 5. Use RHF's register function to connect inputs
+                {...register("firstname")}
+                // 6. Pass errors from RHF's formState to your Input component
+                error={errors.firstname?.message}
               />
               <Input
                 label="Last Name"
                 type="text"
                 id="lastname"
-                value={formdata.lastname}
-                onChange={handleChange}
                 placeholder="Doe"
                 required
-                error={validationErrors.lastname} // Pass error message to Input component
+                {...register("lastname")}
+                error={errors.lastname?.message}
               />
             </div>
 
@@ -142,37 +108,31 @@ const Register = () => {
               label="Email"
               type="email"
               id="email"
-              value={formdata.email}
-              onChange={handleChange}
               placeholder="example@mail.com"
               required
-              error={validationErrors.email} // Pass error message to Input component
+              {...register("email")}
+              error={errors.email?.message}
             />
 
             <Input
               label="Password"
               type="password"
               id="password"
-              value={formdata.password}
-              onChange={handleChange}
               placeholder="Create a password"
               required
-              error={validationErrors.password} // Pass error message to Input component
+              {...register("password")}
+              error={errors.password?.message}
             />
 
             <Input
               label="Confirm Password"
               type="password"
               id="confirmpassword"
-              value={formdata.confirmpassword}
-              onChange={handleChange}
               placeholder="Repeat your password"
               required
-              error={validationErrors.confirmpassword} 
+              {...register("confirmpassword")}
+              error={errors.confirmpassword?.message}
             />
-
-           
-            
 
             <div className="text-sm text-center text-gray-600">
               Already have an account?{" "}
@@ -184,9 +144,20 @@ const Register = () => {
               </Link>
             </div>
 
-            <div className="text-center">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full transition-all duration-300">
-                Register
+            <div className="flex justify-center gap-4 mt-6">
+              <Button
+                type="button"
+                onClick={handleGoHome}
+                className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-2 rounded-full transition-all duration-300"
+              >
+                Back to Home
+              </Button>
+              <Button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-full transition-all duration-300"
+                disabled={isSubmitting} // Disable button while submitting
+              >
+                {isSubmitting ? "Registering..." : "Register"}
               </Button>
             </div>
           </form>
