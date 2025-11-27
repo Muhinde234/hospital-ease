@@ -10,7 +10,6 @@ import Register from "./pages/landing/register";
 import Contact from "./pages/landing/contact";
 import Services from "./pages/landing/services"
 import GuestLayout from "./components/layout/GuestLayout";
-import Sidebar from "./components/layout/sidebar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 
@@ -41,10 +40,7 @@ const router = createBrowserRouter([
     path: "/forgot-password",
     element: <ForgotPassword/>,
   },
-  {
-    path: "/dashboard",
-    element: <Sidebar />,
-  },
+  
 ]);
 
 const helmetContext = {};
