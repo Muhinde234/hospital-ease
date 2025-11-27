@@ -7,7 +7,7 @@ import ApplyPage from "./pages/landing/applyPage";
 import ForgotPassword from "./pages/landing/forgot-password";
 import Login from "./pages/landing/login";
 import Register from "./pages/landing/register";
-import Contact from "./pages/landing/Contact";
+import Contact from "./pages/landing/contact";
 import Services from "./pages/landing/services"
 import GuestLayout from "./components/layout/GuestLayout";
 import Sidebar from "./components/layout/sidebar";
