@@ -2,15 +2,15 @@
 import "./App.css";
 
 import LandingPage from "./pages/landing/landingPage";
-import About from "./pages/landing/About";
-import ApplyPage from "./pages/landing/ApplyPage";
+import About from "./pages/landing/about";
+import ApplyPage from "./pages/landing/applyPage";
 import ForgotPassword from "./pages/landing/forgot-password";
-import Login from "./pages/landing/Login";
-import Register from "./pages/landing/Register";
+import Login from "./pages/landing/login";
+import Register from "./pages/landing/register";
 import Contact from "./pages/landing/Contact";
 import Services from "./pages/landing/services"
 import GuestLayout from "./components/layout/GuestLayout";
-import Sidebar from "./components/layout/Sidebar";
+import Sidebar from "./components/layout/sidebar";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 
